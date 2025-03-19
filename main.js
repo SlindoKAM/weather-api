@@ -10,7 +10,7 @@ dotenv.config();
 app.use(express.json());
 
 //Set API key from environment variable and Base URL for making requests
-const API_KEY = process.env.WEATHER_API_KEY || 'your_api_key'; // Get API key from environment variable
+const API_KEY = process.env.WEATHER_API_KEY; // Get API key from environment variable
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather'; // Base URL for making requests,giving the current weather data from OpenWeatherMap API
 
 //Create a route to get the current weather data[GET request]
@@ -36,7 +36,7 @@ app.get('/weather', async (req, res) =>
         
         // Make a request to OpenWeatherMap API to get the current weather data using the axios module[axios.get() method]
         // The response data will be stored in the response variable
-        const response = await axios.get(`${BASE_URL}/weather`, 
+        const response = await axios.get(`${BASE_URL}`, 
         {
             params: 
             {
@@ -89,7 +89,7 @@ app.get('/weather', async (req, res) =>
         };
 
         //Send the formatted response to the client
-        res.json(formatedResponse);
+        res.json(formattedResponse);
     } catch (error) 
     {
         // Log the error message to the console for debugging purposes
@@ -233,4 +233,4 @@ app.listen(PORT, () =>
 });
 
 //Export the app module for testing purposes
-module.exports = main;
+module.exports = app;
