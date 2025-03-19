@@ -103,7 +103,7 @@ async function fetchWeatherWithCache(locationQuery, units = 'metric')
         //Fetch fresh data from the OpenWeatherMap API
         // Make a request to OpenWeatherMap API to get the current weather data using the axios module[axios.get() method]
         // The response data will be stored in the response variable
-        const response = await axios.get(`${BASE_URL}`, 
+        const response = await axios.get(config.BASE_URL, 
         {
             params: 
             {
@@ -302,7 +302,7 @@ async function fetchForecastWithCache(locationQuery, units = 'metric')
         //Fetch fresh data from the OpenWeatherMap API
         // Make a request to OpenWeatherMap API to get the forecast data using the axios module[axios.get() method]
         // The response data will be stored in the response variable
-        const response = await axios.get(`${BASE_URL}`, 
+        const response = await axios.get(config.BASE_URL, 
         {
             params: 
             {
