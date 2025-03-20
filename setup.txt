@@ -1,0 +1,9 @@
+# You do not need to commit this file to your repository
+# This file is for local development only and for the environment variables
+# You can use this file to store your API keys and other sensitive information
+WEATHER_API_KEY=678adc875261b33e84be01c00daa3877
+PORT=3000
+REDIS_URL=redis://localhost:6379
+CACHE_TTL=43200
+RATE_LIMIT_WINDOW=900000
+RATE_LIMIT_MAX=100
