@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is a simple website for weather and timezone">
+    <meta name="author" content="Slindo Ngcobo">
+    <title>
+        Weather and Timezone App
+    </title>
+
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+    <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+
+</head>
+<body>
+    <h1>
+        Weather Dashboard
+    </h1>
+
+    <div class="container">
+        <h2 class="day" id="day"></h2>
+
+        <div class="box-container">
+            <div class="box">
+                <div class="clock">
+                    <div class="front-clock">
+                        <div id="hour">
+                            00
+                        </div>
+                        <p>Hours</p>
+                    </div>
+                </div>
+
+                <div class="clock">
+                    <div class="front-clock">
+                        <div id="minute">
+                            00
+                        </div>
+                        <p>Minutes</p>
+                    </div>
+                </div>
+
+                <div class="clock">
+                    <div class="front-clock">
+                        <div id="second">
+                            00
+                        </div>
+                        <p>Seconds</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="mr-modal" id="openModal">
+                Select Timezone
+            </button>
+
+            <p class="selected-display" id="selectedTimezoneDisplay">
+                Selected Timezone:
+            </p>
+        </div>
+    </div>
+
+    <div class="mr-modal-slide" id="timezoneModal" aria-hidden="true">
+        <div class="modal-overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                <header class="modal-header">
+                    <h3 class="modal-title" id="modalTitle">
+                        Select a Timezone
+                    </h3>
+                    <button class="modal-close" aria-label="Close modal" data-micromodal-close>
+                        Close
+                    </button>
+                </header>
+
+                <main class="modal-contant" id="modalContant">
+                    <select class="timezone-select" id="timezoneSelect"></select>
+                </main>
+
+                <footer class="modal-footer">
+                    <button class="modal-btn modal-btn-primary" id="saveTimezone">
+                        Save
+                    </button>
+
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="weather-client-frontend.js"></script>
+</body>
+</html>

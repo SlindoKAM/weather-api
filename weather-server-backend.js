@@ -10,6 +10,7 @@ const app = express(); // Create express server
 //Load environment variables from .env file
 dotenv.config();
 
+
 //Redis client for caching data[Set up Redis client]
 const redisClient = Redis.createClient(
 {
