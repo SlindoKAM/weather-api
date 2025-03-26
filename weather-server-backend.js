@@ -2,6 +2,7 @@ const express = require('express'); // Import express module for creating server
 const axios = require('axios'); // Import axios module for making HTTP requests
 const dotenv = require('dotenv'); // Import dotenv module for reading .env file
 const Redis = require('redis'); // Import redis module for caching data
+const CORS = require('cors'); // Import cors module for enabling CORS
 // const { promisify } = require('util'); // Import promisify function from util module for converting callback functions to promises
 const rateLimit = require('express-rate-limit'); // Import express-rate-limit module for rate limiting requests
 // const { url } = require('inspector');
@@ -32,6 +33,8 @@ redisClient.on('reconnecting', () => console.log('Redis client reconnecting')); 
     await redisClient.connect();
 })();
 
+//Enable CORS for all requests
+app.use(CORS());
 
 //Set up middleware to parse JSON data
 app.use(express.json());
