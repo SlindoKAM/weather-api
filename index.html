@@ -24,9 +24,10 @@
         Weather Dashboard
     </h1>
 
+    <!-- Time Section -->
     <div class="container">
         <h2 class="day" id="day"></h2>
-
+        
         <div class="box-container">
             <div class="box">
                 <div class="clock">
@@ -56,7 +57,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <button class="mr-modal" id="openModal">
                 Select Timezone
             </button>
@@ -65,8 +66,16 @@
                 Selected Timezone:
             </p>
         </div>
+
+        <!-- Weather Section -->
+        <div class="weather-section">
+            <input type="text" id="loctaionInput" placeholder="Please Enter a City Name">
+            <button id="fetchWeather">Get Weather</button>
+            <p id="weatherDisplay">Weather Information: N/A</p>
+        </div>
     </div>
 
+    <!-- Timezone Modal -->
     <div class="mr-modal-slide" id="timezoneModal" aria-hidden="true">
         <div class="modal-overlay" tabindex="-1" data-micromodal-close>
             <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">

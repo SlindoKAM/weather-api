@@ -3,20 +3,25 @@ dayjs.extend(dayjs_plugin_timezone);
 
 MicroModal.init();
 
+//Selecting DOM elements for time display
 const hour = document.getElementById('hour');
 const minute = document.getElementById('minute');
 const second = document.getElementById('second');
 const day = document.getElementById('day');
-const openModalBtn = document.getElementById('openModal');
-const saveTimezoneBtn = document.getElementById('saveTimezone');
+
+//Selecting DOM elements for timezone modal
+const openModalButton = document.getElementById('openModal');
+const saveTimezoneButton = document.getElementById('saveTimezone');
 const timezoneSelect = document.getElementById('timezoneSelect');
-const selectedTimezoneDis = document.getElementById('selectedTimezoneDisplay');
+const selectedTimezoneDisplay = document.getElementById('selectedTimezoneDisplay');
 
-//Default Timezone
-let selectedTimezone = 'UTC';
+//Selecting DOM elements for weather display
+const locationInput = document.getElementById('locationInput');
+const fetchWeatherButton = document.getElementById('fetchWeather');
+const weatherDisplay = document.getElementById('weatherDisplay');
 
-//Fetch all available timezone
-const timezones = Intl.supportedValuesOf('timeZone')
+let selectedTimezone = 'UTC';//Default Timezone
+const timezones = Intl.supportedValuesOf('timeZone');//Fetch all available(supported) timezone
 
 //Function to update the time based on the selected timezone
 function updateTime()
@@ -28,7 +33,7 @@ function updateTime()
     second.textContent = now.format('ss');
 }
 
-//Event listener for the modal open button
+//Event listener for the modal open button to populate timezone dropdown
 openModalBtn.addEventListener('click', () =>
 {
     //Populate dropdown dynamically
@@ -48,17 +53,72 @@ openModalBtn.addEventListener('click', () =>
 //Event listener for the save timezone button
 saveTimezoneBtn.addEventListener('click', () =>
 {
+    //Get the selected timezone
     selectedTimezone = timezoneSelect.value;
-    MicroModal.close('timezoneModal');
 
     //Update the displayed timezone
-    selectedTimezoneDis.textContent = `Selected Timezone: ${selectedTimezone}`;
+    selectedTimezoneDisplay.textContent = `Selected Timezone: ${selectedTimezone}`;
     
     //Update time immediately after selecting timezone
     updateTime();
 
-    selectedTimezoneDis.style.display = 'flex';
+    //Show the selected timezone display
+    // selectedTimezoneDisplay.style.display = 'flex';
+    
+    //Close the modal
+    MicroModal.close('timezoneModal');
 });
+
+//Fuction to fetch weather data
+async function fetchWeather()
+{
+    //Get the location from the input field
+    const location = locationInput.value.trim();
+    
+    //Check if the location is empty
+    if(!location)
+    {
+        weatherDisplay.textContent = 'Please enter a city name.';
+        return;
+    }
+    
+    //Fetch weather data from the server
+    try 
+    {
+        const response = await fetch(`/weather?city=${encodeURIComponent(location)}`);
+        
+        //Check if the response is not ok
+        if(!response.ok)
+        {
+            throw new Error('Error: ${response.statusText}');
+        }
+
+        //Parse the response
+        const weatherData = await response.json();
+
+        //Update the weather display
+        weatherDisplay.innerHTML = `
+            Location: ${weatherData.location.city}, ${weatherData.location.country}<br>
+            Condition: ${weatherData.weather.condition} - ${weatherData.weather.description}<br>
+            Temperature: ${weatherData.weather.temperature.current}°C (Feels Like:${weatherData.weather.temperature.feelsLike}°C)<br>
+            Humidity: ${weatherData.weather.humidity}%<br>
+            Wind: ${weatherData.weather.wind.speed} m/s `;
+
+        //Convert and upadate timezone based on the location
+        const cityTimezone = `Etc/GMT${Math.round(weatherData.location.coordinates.lon/15 ) * -1}`;
+        selectedTimezone = cityTimezone;
+        selectedTimezoneDisplay.textContent = `Selected Timezone: ${selectedTimezone}`;
+        updateTime();
+
+    } catch (error) 
+    {
+        weatherDisplay.textContent = 'Error while fetching weather data. Please try again.';
+        console.error(error);
+    }
+}
+
+// Event listener to bind the fetchWeather function to the button on a click event
+fetchWeatherButton.addEventListener('click', fetchWeather);
 
 //Update time every second
 setInterval(updateTime, 1000);
