@@ -47,11 +47,13 @@ const config =
 {
     WEATHER_API_KEY: process.env.WEATHER_API_KEY, // Get API key from environment variable
     BASE_URL: 'https://api.openweathermap.org/data/2.5/weather', // Base URL for making requests,giving the current weather data from OpenWeatherMap API
-    PORT: process.env.PORT || 3000, // Get the port from environment variable or use port 3000
+    W_PORT: process.env.W_PORT || 3000, // Get the port from environment variable or use port 3000
+    T_PORT: process.env.T_PORT || 3001, //Use a different port for the proxy server
     REDIS_URL: process.env.REDIS_URL, // Get the Redis URL from environment variable
     CACHE_TTL: parseInt(process.env.CACHE_TTL) || 43200, // Get the cache TTL from environment variable or use 12 hours in seconds
     RATE_LIMIT_WINDOW: parseInt(process.env.RATE_LIMIT_WINDOW) || 15 * 60 * 1000, // Get the rate limit window from environment variable or use 15 minutes
-    RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX) || 100 // Get the rate limit maximum requests from environment variable or use 100 requests per window
+    RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX) || 100, // Get the rate limit maximum requests from environment variable or use 100 requests per window
+    TIMEZONE_API_KEY: process.env.TIMEZONE_API_KEY //Get timezone API key from environment variable 
 };
 
 //Validate the configuration settings[from environment variables]
@@ -59,6 +61,12 @@ if(!config.WEATHER_API_KEY)
 {
     console.error('ERROR: WEATHER_API_KEY environment variable is required');
     process.exit(1);
+}
+
+if(!config.TIMEZONE_API_KEY)
+{
+    console.error('ERROR: TIMEZONE_API_KEY environment variable is required');
+    process.exit(2);
 }
 
 //Set up rate limiting for the server
@@ -77,6 +85,41 @@ app.use(async (req, res, next) =>
 {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${req.ip}`); // Log the request method, path and IP address to the console
     next(); // Move to the next middleware
+});
+
+//Proxy endpoint to fetch timezone data
+app.get('/proxy/timezone', async (req, res) =>
+{
+    const {zone} = req.query; //Get the timezone from quiry parameter
+    console.log(`Received zone is :${zone}`);
+    
+
+    if(!zone)
+    {
+        return res.status(400).json({error:'Timezone is required'});
+    }
+
+    try 
+    {
+        //Make a request to the TimeZoneDB API
+        const response = await axios.get('http://api.timezonedb.com/v2.1/get-time-zone',
+        {
+            params:
+            {
+                key: config.TIMEZONE_API_KEY,
+                format: 'json',
+                by: 'zone',
+                zone: zone
+            }
+        });
+
+        //Send the API response back to the client
+        res.json(response.data);
+    } catch (error) 
+    {
+        console.error('Error fetching data from TimeZoneDB:', error.message);
+        res.status(500).json({ error: 'Failed to fetch data from TimeZoneDB'});
+    }
 });
 
 /**
@@ -502,10 +545,18 @@ app.get('/health', (req, res) =>
 
 //Set the port for the server to listen on[Start the server]
 // const PORT = process.env.PORT || 3000; // Get the port from environment variable or use port 3000
-const PORT = config.PORT; // Get the port from the configuration settings
-app.listen(PORT, () =>
+const W_PORT = config.W_PORT; // Get the port from the configuration settings
+app.listen(W_PORT, () =>
 {
-    console.log(`Server is running on http://localhost:${PORT}`);// Log the server URL to the console
+    console.log(`Server is running on http://localhost:${W_PORT}`);// Log the server URL to the console
+});
+
+//Start the proxy server
+const T_PORT = config.T_PORT;
+app.listen(T_PORT, () =>
+{
+    console.log(`Proxy Server is running on http://localhost:${T_PORT}`);
+    
 });
 
 //Export the app module for testing purposes
