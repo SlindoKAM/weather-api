@@ -1,7 +1,12 @@
+// const axios = require('axios');
+
 dayjs.extend(dayjs_plugin_utc);
 dayjs.extend(dayjs_plugin_timezone);
 
+//Initialize the modal
 MicroModal.init();
+
+
 
 //Selecting DOM elements for time display
 const hour = document.getElementById('hour');
@@ -34,7 +39,7 @@ function updateTime()
 }
 
 //Event listener for the modal open button to populate timezone dropdown
-openModalBtn.addEventListener('click', () =>
+openModalButton.addEventListener('click', () =>
 {
     //Populate dropdown dynamically
     timezoneSelect.innerHTML = '';
@@ -51,7 +56,7 @@ openModalBtn.addEventListener('click', () =>
 
 
 //Event listener for the save timezone button
-saveTimezoneBtn.addEventListener('click', () =>
+saveTimezoneButton.addEventListener('click', () =>
 {
     //Get the selected timezone
     selectedTimezone = timezoneSelect.value;
@@ -85,7 +90,7 @@ async function fetchWeather()
     //Fetch weather data from the server
     try 
     {
-        const response = await fetch(`/weather?city=${encodeURIComponent(location)}`);
+        const response = await fetch(`http://localhost:3000/weather?city=${encodeURIComponent(location)}`);
         
         //Check if the response is not ok
         if(!response.ok)
