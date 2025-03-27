@@ -33,15 +33,15 @@ async function fetchWeather(city)
         return;
     }
 
-    // //Get the location from the input field
-    // const location = locationInput.value.trim();
+    //Get the location from the input field
+    const location = locationInput.value.trim();
     
-    // //Check if the location is empty
-    // if(!location)
-    // {
-    //     weatherDisplay.textContent = 'Please enter a city name.';
-    //     return;
-    // }
+    //Check if the location is empty
+    if(!location)
+    {
+        weatherDisplay.textContent = 'Please enter a city name.';
+        return;
+    }
     
     //Fetch weather data from the server
     try 
@@ -67,10 +67,10 @@ async function fetchWeather(city)
         `;
 
         //Use the correct timezone from the API response
-        const cityTimezone = weatherData.location.timezone
+        // const cityTimezone = weatherData.location.timezone
 
         //Convert and upadate timezone based on the location
-        // const cityTimezone = `Etc/GMT${-Math.round(weatherData.location.coordinates.lon/15 )}`;
+        const cityTimezone = `Etc/GMT${-Math.round(weatherData.location.coordinates.lon/15 )}`;
         // selectedTimezone = cityTimezone;
         selectedTimezone = cityTimezone.startsWith('Etc/GMT') ? cityTimezone.replace('Etc/GMT', 'Etc/GMT-') : cityTimezone;
 
@@ -183,7 +183,11 @@ saveTimezoneButton.addEventListener('click', async () =>
 });
 
 // Event listener to bind the fetchWeather function to the button on a click event
-fetchWeatherButton.addEventListener('click', fetchWeather);
+fetchWeatherButton.addEventListener('click', () =>
+{
+    const city = locationInput.value.trim(); // Get the city name from the input field
+    fetchWeather(city);// Call fetchWeather with the city name
+});
 
 //Update time every second
 setInterval(updateTime, 1000);
